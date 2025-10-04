@@ -126,40 +126,63 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Analyze manual data
-    function analyzeManualData() {
-        const stellarEclipseFlag = document.getElementById('stellar-eclipse-flag').value;
-        const notTransitLike = document.getElementById('not-transit-like').value;
-        const centroidOffset = document.getElementById('centroid-offset').value;
-        const transitDuration = document.getElementById('transit-duration').value;
-        const numPlanets = document.getElementById('num-planets').value;
-        const transitEpoch = document.getElementById('transit-epoch').value;
-        const contaminationFlag = document.getElementById('contamination-flag').value;
-        const kicRa = document.getElementById('kic-ra').value;
+    async function analyzeManualData() {
+        const koi_fpflag_ss = document.getElementById('koi_fpflag_ss').value;
+        const koi_fpflag_nt = document.getElementById('koi_fpflag_nt').value;
+        const koi_fpflag_co = document.getElementById('koi_fpflag_co').value;
+        const koi_duration = document.getElementById('koi_duration').value;
+        const koi_time0bk = document.getElementById('koi_time0bk').value;
+        const koi_fpflag_ec = document.getElementById('koi_fpflag_ec').value;
+        const ra = document.getElementById('ra').value;
 
-        if (!stellarEclipseFlag || !notTransitLike || !centroidOffset || !transitDuration || 
-            !numPlanets || !transitEpoch || !contaminationFlag || !kicRa) {
+        if (!koi_fpflag_ss || !koi_fpflag_nt || !koi_fpflag_co || !koi_duration || 
+            !koi_time0bk || !koi_fpflag_ec || !ra) {
             showError('Please fill in all fields before analyzing.');
             return;
         }
 
-        // Simulate analysis (in real app, this would call your ML model)
-        const score = calculateConfidenceScore(
-            stellarEclipseFlag, notTransitLike, centroidOffset, transitDuration, 
-            numPlanets, transitEpoch, contaminationFlag, kicRa
-        );
-        animateMeter(score);
+        // Show loading state
+        resultDetails.innerHTML = '<p class="result-text">Analyzing data with ' + modelNames[selectedModel] + '...</p>';
         
-        displayResults(score, {
-            model: modelNames[selectedModel],
-            stellarEclipseFlag,
-            notTransitLike,
-            centroidOffset,
-            transitDuration,
-            numPlanets,
-            transitEpoch,
-            contaminationFlag,
-            kicRa
-        });
+        try {
+            // Call backend API
+            const response = await fetch('/api/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model_name: selectedModel,
+                    koi_fpflag_ss: parseInt(koi_fpflag_ss),
+                    koi_fpflag_nt: parseInt(koi_fpflag_nt),
+                    koi_fpflag_co: parseInt(koi_fpflag_co),
+                    koi_duration: parseFloat(koi_duration),
+                    koi_time0bk: parseFloat(koi_time0bk),
+                    koi_fpflag_ec: parseInt(koi_fpflag_ec),
+                    ra: parseFloat(ra)
+                })
+            });
+
+            const data = await response.json();
+            
+            if (response.ok) {
+                // Animate meter with confidence score
+                animateMeter(data.confidence);
+                
+                // Display results
+                displayResults(data.confidence, {
+                    model: modelNames[selectedModel],
+                    is_exoplanet: data.is_exoplanet,
+                    prediction: data.prediction,
+                    probabilities: data.probabilities
+                });
+            } else {
+                showError('Error: ' + (data.error || 'Unknown error occurred'));
+            }
+        } catch (error) {
+            showError('Failed to connect to backend. Please make sure the server is running.');
+            console.error('Error:', error);
+        }
     }
 
     // Analyze CSV file
@@ -189,28 +212,6 @@ document.addEventListener('DOMContentLoaded', function() {
         reader.readAsText(uploadedFile);
     }
 
-    // Calculate confidence score (simple heuristic for demo)
-    function calculateConfidenceScore(eclipseFlag, notTransit, centroid, duration, planets, epoch, contamination, ra) {
-        // Simple scoring algorithm (in real app, use your ML model)
-        let score = 50;
-        
-        // Flags analysis (inverted - lower flags suggest better exoplanet candidate)
-        if (eclipseFlag == 0) score += 15;
-        if (notTransit == 0) score += 15;
-        if (centroid == 0) score += 10;
-        if (contamination == 0) score += 10;
-        
-        // Transit duration check (reasonable range)
-        if (duration >= 1 && duration <= 10) score += 10;
-        
-        // Number of planets (multi-planet systems are interesting)
-        if (planets >= 1 && planets <= 5) score += 5;
-        
-        // Add some randomness for demo
-        score += Math.floor(Math.random() * 15) - 5;
-        
-        return Math.min(100, Math.max(0, score));
-    }
 
     // Draw meter on canvas
     function drawMeter(value) {
@@ -275,29 +276,44 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayResults(score, data) {
         let classification = '';
         let message = '';
+        let resultType = data.is_exoplanet !== undefined ? 
+            (data.is_exoplanet ? 'EXOPLANET CANDIDATE' : 'NOT AN EXOPLANET') : '';
         
         if (score >= 80) {
             classification = 'High Confidence';
-            message = 'This object shows strong characteristics of an exoplanet candidate.';
+            message = data.is_exoplanet ? 
+                'This object shows strong characteristics of an exoplanet candidate.' :
+                'This object is very unlikely to be an exoplanet.';
         } else if (score >= 60) {
             classification = 'Moderate Confidence';
-            message = 'This object shows moderate characteristics of an exoplanet candidate. Further observation recommended.';
+            message = data.is_exoplanet ?
+                'This object shows moderate characteristics of an exoplanet candidate. Further observation recommended.' :
+                'This object shows low probability of being an exoplanet.';
         } else if (score >= 40) {
             classification = 'Low Confidence';
-            message = 'This object shows weak characteristics of an exoplanet candidate. Additional data needed.';
+            message = data.is_exoplanet ?
+                'This object shows weak characteristics of an exoplanet candidate. Additional data needed.' :
+                'This object is unlikely to be an exoplanet candidate.';
         } else {
             classification = 'Very Low Confidence';
-            message = 'This object is unlikely to be an exoplanet candidate.';
+            message = data.is_exoplanet ?
+                'Very weak exoplanet characteristics detected.' :
+                'This object is very unlikely to be an exoplanet candidate.';
         }
         
         let detailsHTML = `
             <p class="result-text">
                 <strong>Model Used:</strong> ${data.model || modelNames[selectedModel]}<br>
+                ${resultType ? `<strong>Result:</strong> <span style="color: ${data.is_exoplanet ? '#22c55e' : '#ef4444'};">${resultType}</span><br>` : ''}
                 <strong>Classification:</strong> ${classification}<br>
-                <strong>Confidence Score:</strong> ${score}/100<br><br>
-                ${message}
-            </p>
+                <strong>Confidence Score:</strong> ${score}/100<br>
         `;
+        
+        if (data.probabilities && data.probabilities.length === 2) {
+            detailsHTML += `<strong>Probabilities:</strong> Not Exoplanet: ${(data.probabilities[0] * 100).toFixed(1)}%, Exoplanet: ${(data.probabilities[1] * 100).toFixed(1)}%<br>`;
+        }
+        
+        detailsHTML += `<br>${message}</p>`;
         
         if (data.isCSV) {
             detailsHTML += `<p class="result-text" style="margin-top: 1rem;">

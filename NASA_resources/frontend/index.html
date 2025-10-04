@@ -34,42 +34,38 @@
                     <h2>Manual Data Input</h2>
                     <div class="form-row">
                         <div class = "form-group">
-                            <label for = "stellar-eclipse-flag">Stellar Eclipse Flag</label>
-                            <input type = "number" id = "stellar-eclipse-flag" step = "1" placeholder = "Enter flag (0 or 1)">
+                            <label for = "koi_fpflag_ss">Stellar Eclipse Flag</label>
+                            <input type = "number" id = "koi_fpflag_ss" step = "1" placeholder = "Enter flag (0 or 1)">
                         </div>
                         <div class = "form-group">
-                            <label for = "not-transit-like">Not Transit-Like Flag</label>
-                            <input type = "number" id = "not-transit-like" step="1" placeholder = "Enter flag (0 or 1)">
+                            <label for = "koi_fpflag_nt">Not Transit-Like Flag</label>
+                            <input type = "number" id = "koi_fpflag_nt" step="1" placeholder = "Enter flag (0 or 1)">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class = "form-group">
-                            <label for = "centroid-offset">Centroid Offset Flag</label>
-                            <input type = "number" id = "centroid-offset" step = "1" placeholder = "Enter flag (0 or 1)">
+                            <label for = "koi_fpflag_co">Centroid Offset Flag</label>
+                            <input type = "number" id = "koi_fpflag_co" step = "1" placeholder = "Enter flag (0 or 1)">
                         </div>
                         <div class="form-group">
-                            <label for = "transit-duration">Transit Duration (hours)</label>
-                            <input type = "number" id="transit-duration" step="0.01" placeholder="Enter duration">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="num-planets">Number of Planets</label>
-                            <input type="number" id="num-planets" step="1" placeholder="Enter count">
-                        </div>
-                        <div class="form-group">
-                            <label for="transit-epoch">Transit Epoch (BJD - 2,454,833.0)</label>
-                            <input type="number" id="transit-epoch" step="0.01" placeholder="Enter epoch">
+                            <label for = "koi_duration">Transit Duration (hours)</label>
+                            <input type = "number" id="koi_duration" step="0.01" placeholder="Enter duration">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="contamination-flag">Ephemeris Match Indicates Contamination Flag</label>
-                            <input type="number" id="contamination-flag" step="1" placeholder="Enter flag (0 or 1)">
+                            <label for="koi_time0bk">Transit Epoch (BJD - 2,454,833.0)</label>
+                            <input type="number" id="koi_time0bk" step="0.01" placeholder="Enter epoch">
                         </div>
                         <div class="form-group">
-                            <label for="kic-ra">KIC Right Ascension</label>
-                            <input type="number" id="kic-ra" step="0.01" placeholder="Enter RA">
+                            <label for="koi_fpflag_ec">Ephemeris Match Contamination Flag</label>
+                            <input type="number" id="koi_fpflag_ec" step="1" placeholder="Enter flag (0 or 1)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="ra">KIC Right Ascension</label>
+                            <input type="number" id="ra" step="0.01" placeholder="Enter RA">
                         </div>
                     </div>
                     <button class="analyze-button" id="analyze-manual">Analyze Data</button>
