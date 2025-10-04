@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang=""en>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="'width=device-width, initial-scale=1.0">
+    <title>Biggatrain</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class = "app-container">
+        <header>
+            <div class = "header-content">
+                <h1 class = "logo">Exo_Scan AI</h1>
+                <p class = "subtitle">Exoplanet Classification System</p>
+            </div>
+        </header>
+
+        <main class = "main-content">
+            <div class = "left-panel">
+                <div class = "model-selection-section">
+                    <h2>Select ML Model</h2>
+                    <div class="model-tabs">
+                        <button class="model-tab active" data-model="logistic">Logistic</button>
+                        <button class="model-tab" data-model="random-forest">Random Forest</button>
+                        <button class="model-tab" data-model="gradient-boosting">Gradient Boosting</button>
+                        <button class="model-tab" data-model="lightgbm">LightGBM</button>
+                    </div>
+                    <div class="selected-model-info">
+                        <p>Selected Model: <span id="selected-model-name">Logistic Regression</span></p>
+                    </div>
+                </div>
+
+                <div class = "input-section">
+                    <h2>Manual Data Input</h2>
+                    <div class="form-row">
+                        <div class = "form-group">
+                            <label for = "stellar-eclipse-flag">Stellar Eclipse Flag</label>
+                            <input type = "number" id = "stellar-eclipse-flag" step = "1" placeholder = "Enter flag (0 or 1)">
+                        </div>
+                        <div class = "form-group">
+                            <label for = "not-transit-like">Not Transit-Like Flag</label>
+                            <input type = "number" id = "not-transit-like" step="1" placeholder = "Enter flag (0 or 1)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class = "form-group">
+                            <label for = "centroid-offset">Centroid Offset Flag</label>
+                            <input type = "number" id = "centroid-offset" step = "1" placeholder = "Enter flag (0 or 1)">
+                        </div>
+                        <div class="form-group">
+                            <label for = "transit-duration">Transit Duration (hours)</label>
+                            <input type = "number" id="transit-duration" step="0.01" placeholder="Enter duration">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="num-planets">Number of Planets</label>
+                            <input type="number" id="num-planets" step="1" placeholder="Enter count">
+                        </div>
+                        <div class="form-group">
+                            <label for="transit-epoch">Transit Epoch (BJD - 2,454,833.0)</label>
+                            <input type="number" id="transit-epoch" step="0.01" placeholder="Enter epoch">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contamination-flag">Ephemeris Match Indicates Contamination Flag</label>
+                            <input type="number" id="contamination-flag" step="1" placeholder="Enter flag (0 or 1)">
+                        </div>
+                        <div class="form-group">
+                            <label for="kic-ra">KIC Right Ascension</label>
+                            <input type="number" id="kic-ra" step="0.01" placeholder="Enter RA">
+                        </div>
+                    </div>
+                    <button class="analyze-button" id="analyze-manual">Analyze Data</button>
+                </div>
+
+                <div class="upload-section">
+                    <h2>Upload CSV Data</h2>
+                    <div class="file-upload-area" id="file-upload-area">
+                        <svg class="upload-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke_width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text">Drop your CSV file here</p>
+                        <p class="upload-subtext">or click to browse</p>
+                        <p class="file-requirements">CSV only • Max 16MB</p>
+                        <input type="file" id="file-input" accept=".csv" hidden>
+                    </div>
+                    <div class="file-info" id="file-info" style="display: none;">
+                        <p class="file-name" id="file-name"></p>
+                        <button class="remove-file" id="remove-file">Remove</button>
+                    </div>
+                    <button class="analyze-button" id="analyze-file" style="display: none">Analyze CSV</button>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="results-section">
+                    <h2>Classification Results</h2>
+                    <div class="meter-container">
+                        <div class="meter-label">Exoplanet Confidence Score</div>
+                        <div class="meter-wrapper">
+                            <canvas id="meter-canvas" width="300" height="200"></canvas>
+                            <div class="meter-value" id="meter-value">0</div>
+                        </div>
+                        <div class="meter-scale">
+                            <span>0</span>
+                            <span>25</span>
+                            <span>50</span>
+                            <span>75</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                    <div class="result-details" id="result-details">
+                        <p class="result-placeholder">Upload data or enter parameters to begin analysis</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
