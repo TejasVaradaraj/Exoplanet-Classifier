@@ -12,19 +12,19 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # models
-gbc = joblib.load("Gradient Boosting.pkl")
-lGBM = joblib.load("LightGBM.pkl")
-logistic = joblib.load("Logistic.pkl")
-rForest = joblib.load("Random Forest.pkl")
+gbc = joblib.load("scalar/Gradient Boosting.pkl")
+lGBM = joblib.load("scalar/LightGBM.pkl")
+logistic = joblib.load("scalar/Logistic.pkl")
+rForest = joblib.load("scalar/Random Forest.pkl")
 
 # scalars
-koi_duration_scalar = joblib.load("koi_duration.pkl")
-koi_fpflag_co_scalar = joblib.load("koi_fpflag_co.pkl")
-koi_fpflag_ec_scalar = joblib.load("koi_fpflag_ec.pkl")
-koi_fpflag_nt_scalar = joblib.load("koi_fpflag_nt.pkl")
-koi_fpflag_ss_scalar = joblib.load("koi_fpflag_ss.pkl")
-koi_time0bk_scalar = joblib.load("koi_time0bk_scalar.pkl")
-ra_scalar = joblib.load("ra.pkl")
+koi_duration_scalar = joblib.load("scalar/koi_duration.pkl")
+koi_fpflag_co_scalar = joblib.load("scalar/koi_fpflag_co.pkl")
+koi_fpflag_ec_scalar = joblib.load("scalar/koi_fpflag_ec.pkl")
+koi_fpflag_nt_scalar = joblib.load("scalar/koi_fpflag_nt.pkl")
+koi_fpflag_ss_scalar = joblib.load("scalar/koi_fpflag_ss.pkl")
+koi_time0bk_scalar = joblib.load("scalar/koi_time0bk_scalar.pkl")
+ra_scalar = joblib.load("scalar/ra.pkl")
 
 templates = Jinja2Templates(directory="templates")
 
