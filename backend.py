@@ -111,4 +111,4 @@ async def predict(request: PredictionRequest):
         )
 
 if __name__ == "__main__":
-    uvicorn.run("backend:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)), reload=True)
+    uvicorn.run("backend:app", host="0.0.0.0", port=int(os.environ.get("PORT", 5500)), reload=True)
